@@ -1,0 +1,23 @@
+{
+    "name": "reketaka/yii2-nodes-tree",
+    "description": "Иерархическая структура сайта",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension"],
+    "license": "BSD-4-Clause",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Alexandr Smytkin",
+            "email": "beller.a@mail.ru"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "2amigos/yii2-transliterator-helper": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "reketaka\\nodes\\": "src"
+        }
+    }
+}
