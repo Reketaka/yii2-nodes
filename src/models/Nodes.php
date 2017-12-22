@@ -3,6 +3,7 @@
 namespace reketaka\nodes\models;
 
 use reketaka\nodes\behaviors\AliasBehavior;
+use reketaka\nodes\behaviors\NodeBehavior;
 use Yii;
 use reketaka\nodes\Module;
 use yii\helpers\ArrayHelper;
@@ -16,6 +17,7 @@ use yii\helpers\ArrayHelper;
  * @property string $title
  * @property integer $primary_key
  * @property string $controller_method
+ * @property integer $default
  */
 class Nodes extends \yii\db\ActiveRecord
 {
@@ -28,6 +30,9 @@ class Nodes extends \yii\db\ActiveRecord
                 'level_id'=>'parent_id',
                 'alias'=>'alias',
                 'title'=>'title'
+            ],
+            [
+                'class'=>NodeBehavior::className()
             ]
         ];
     }
@@ -79,7 +84,7 @@ class Nodes extends \yii\db\ActiveRecord
      */
     public function getParent(){
         if(!$this->parent_id){
-            return false;
+            return null;
         }
 
         return self::findOne($this->parent_id);
@@ -94,7 +99,7 @@ class Nodes extends \yii\db\ActiveRecord
         $fullUrl[] = $this->alias;
 
         $parentId = $this->parent_id;
-        while($parentId != 0 && $parent = self::findOne($parentId)){
+        while($parentId && $parent = self::findOne($parentId)){
             array_unshift($fullUrl, $parent->alias);
             $parentId = $parent->parent_id;
         }
