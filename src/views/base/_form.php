@@ -12,6 +12,10 @@ use reketaka\nodes\Module;
  * @var $controllers_methods []
  */
 
+/**
+ * @var $nodeModule Module
+ */
+$nodeModule = Yii::$app->getModule('nodes');
 ?>
 
 <div class="nodes-form">
@@ -31,7 +35,9 @@ use reketaka\nodes\Module;
 
 	<?=$form->field($model, 'controller_method')->dropDownList($controllers_methods)?>
 
-	<?=$form->field($model, 'default')->checkbox()?>
+	<?php if($nodeModule->canEditDefaultNode()):?>
+		<?=$form->field($model, 'default')->checkbox()?>
+	<?php endif; ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Module::t('app', 'create') : Module::t('app', 'update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

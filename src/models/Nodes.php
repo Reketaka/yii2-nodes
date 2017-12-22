@@ -26,13 +26,13 @@ class Nodes extends \yii\db\ActiveRecord
     {
         return [
             [
-                'class'=> AliasBehavior::className(),
-                'level_id'=>'parent_id',
-                'alias'=>'alias',
-                'title'=>'title'
+                'class' => AliasBehavior::className(),
+                'level_id' => 'parent_id',
+                'alias' => 'alias',
+                'title' => 'title'
             ],
             [
-                'class'=>NodeBehavior::className()
+                'class' => NodeBehavior::className()
             ]
         ];
     }
@@ -72,18 +72,20 @@ class Nodes extends \yii\db\ActiveRecord
             'alias' => Module::t('app', 'alias'),
             'title' => Module::t('app', 'title'),
             'primary_key' => Module::t('app', 'primary_key'),
-            'controller_method'=>Module::t('app', 'controller_method'),
-            'default'=>Module::t('app', 'is_default'),
-            'link'=>Module::t('app', 'link')
+            'controller_method' => Module::t('app', 'controller_method'),
+            'default' => Module::t('app', 'is_default'),
+            'link' => Module::t('app', 'link')
         ];
     }
 
     /**
      * Возвращает родителя если таковой имеется
+     *
      * @return boolean|self
      */
-    public function getParent(){
-        if(!$this->parent_id){
+    public function getParent()
+    {
+        if (!$this->parent_id) {
             return null;
         }
 
@@ -92,37 +94,43 @@ class Nodes extends \yii\db\ActiveRecord
 
     /**
      * Возвращает полный Url без учета домена сайта
+     *
      * @return array|string
      */
-    public function getUrl(){
-        $fullUrl = [];
+    public function getUrl()
+    {
+        $fullUrl   = [];
         $fullUrl[] = $this->alias;
 
         $parentId = $this->parent_id;
-        while($parentId && $parent = self::findOne($parentId)){
+        while ($parentId && $parent = self::findOne($parentId)) {
             array_unshift($fullUrl, $parent->alias);
             $parentId = $parent->parent_id;
         }
 
-        $fullUrl = Yii::$app->urlManager->baseUrl.'/'.implode('/', $fullUrl);
+        $fullUrl = Yii::$app->urlManager->baseUrl . '/' . implode('/', $fullUrl);
 
         return $fullUrl;
     }
 
     /**
      * Говорит есть ли дети у элемента
+     *
      * @return bool
      */
-    public function hasChildrens(){
+    public function hasChildrens()
+    {
         return empty($this->getChildrens(1));
     }
 
     /**
      * Возвращает всех детей ноды на указанный глубины уровень, где ключом массива является id Node
      * указание $level = 0 вернет всех детей на всей глубине иерархии
+     *
      * @return Nodes[]|[]
      */
-    public function getChildrens($level=1){
+    public function getChildrens($level = 1)
+    {
 
         $result = $this->getChild($this, $level);
 
@@ -133,29 +141,30 @@ class Nodes extends \yii\db\ActiveRecord
     /**
      * Функция помошник
      */
-    private function getChild(Nodes $node, $level=1){
+    private function getChild(Nodes $node, $level = 1)
+    {
         static $aLevel = 0;
 
         $items = self::find()->where([
-            'parent_id'=>$node->id
+            'parent_id' => $node->id
         ])->all();
 
-        if(!$items){
+        if (!$items) {
             return $items;
         }
 
-        $items = ArrayHelper::index($items, function($elem){
+        $items = ArrayHelper::index($items, function ($elem) {
             return $elem->id;
         });
 
         $aLevel++;
 
-        if($aLevel == $level && $level!=0){
+        if ($aLevel == $level && $level != 0) {
             return $items;
         }
 
-        foreach($items as $item){
-            if($childs = $item->getChild($item, $aLevel)){
+        foreach ($items as $item) {
+            if ($childs = $item->getChild($item, $aLevel)) {
                 $items += $childs;
             }
         }

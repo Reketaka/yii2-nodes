@@ -3,21 +3,24 @@
 namespace reketaka\nodes\behaviors;
 
 
+use Yii;
 use reketaka\nodes\models\Nodes;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
 
-class NodeBehavior extends Behavior{
+class NodeBehavior extends Behavior
+{
 
     public function events()
     {
         return [
-            ActiveRecord::EVENT_BEFORE_UPDATE=>'beforeUpdate',
-            ActiveRecord::EVENT_BEFORE_INSERT=>'beforeInsert'
+            ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
+            ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert'
         ];
     }
 
-    public function beforeUpdate($event){
+    public function beforeUpdate($event)
+    {
         /**
          * @var $node Nodes
          */
@@ -27,7 +30,8 @@ class NodeBehavior extends Behavior{
 
     }
 
-    public function beforeInsert($event){
+    public function beforeInsert($event)
+    {
         /**
          * @var $node Nodes
          */
@@ -40,12 +44,18 @@ class NodeBehavior extends Behavior{
     /**
      * При указание страницы по умолчанию снимает галочку у старой страницы
      */
-    public function uncheckDefaultElement(Nodes $node){
-        if(!$node->default){
+    public function uncheckDefaultElement(Nodes $node)
+    {
+        if(!Yii::$app->getModule('nodes')->canEditDefaultNode()){
             return false;
         }
 
-        Nodes::updateAll(['default'=>0], '`default` = 1');
+        if (!$node->default) {
+            return false;
+        }
+
+        Nodes::updateAll(['default' => 0], '`default` = 1');
+
         return true;
     }
 
