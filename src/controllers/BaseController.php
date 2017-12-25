@@ -4,10 +4,12 @@
 namespace reketaka\nodes\controllers;
 
 use reketaka\nodes\models\Nodes;
+use reketaka\nodes\models\NodesControllerCatalog;
 use SebastianBergmann\CodeCoverage\Report\Xml\Node;
 use Yii;
 use reketaka\nodes\models\NodesSearch;
 use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use reketaka\nodes\helpers\NodeHelper;
@@ -45,12 +47,17 @@ class BaseController extends Controller{
         }
 
         $parent = $parent_id != 0?Nodes::findOne($parent_id):false;
-        $controllers_methods = NodeHelper::getControllerMethods();
+
+        $controllers = NodesControllerCatalog::getDb()->cache(function(){
+            return NodesControllerCatalog::find()->all();
+        });
+        $controllers = NodesControllerCatalog::find()->all();
+        $controllers = ArrayHelper::map($controllers, 'id', 'path');
 
         return $this->render('create', [
             'model'=>$model,
             'parent'=>$parent,
-            'controllers_methods'=>$controllers_methods
+            'controllers'=>$controllers
         ]);
 
     }
@@ -67,10 +74,14 @@ class BaseController extends Controller{
             $parent = $p;
         }
 
+        $controllers = NodesControllerCatalog::getDb()->cache(function(){
+            return ArrayHelper::map(NodesControllerCatalog::find()->all(), 'id', 'path');
+        });
+
         return $this->render('update', [
             'model'=>$model,
             'parent'=>$parent,
-            'controllers_methods'=>NodeHelper::getControllerMethods()
+            'controllers'=>$controllers
         ]);
     }
 

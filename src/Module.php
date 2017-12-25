@@ -59,7 +59,7 @@ class Module extends BaseModule{
             return true;
         }
 
-        return !(Nodes::getDb()->cache(function($db){
+        return (Nodes::getDb()->cache(function($db){
             $nodes = Nodes::find()->where(['default'=>1])->all();
             return empty($nodes);
         }));

@@ -44,9 +44,9 @@ class NodeHelper{
                     $name = $method->getName();
                     if ( $method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0 && $name !== 'actions' )
                     {
-                        $comment = trim($method->getDocComment(), '/');
-                        $comment = str_replace('*', '', $comment);
-                        $ourControllerAr[$className.'/'.$name] = $className.'/'.$name.' '.$comment;
+//                        $comment = trim($method->getDocComment(), '/');
+//                        $comment = str_replace('*', '', $comment);
+                        $ourControllerAr[$className.'/'.$name] = $className.'/'.$name;
                     }
                 }
 

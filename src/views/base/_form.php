@@ -9,7 +9,7 @@ use reketaka\nodes\Module;
  * @var $model reketaka\nodes\models\Nodes
  * @var $form yii\widgets\ActiveForm
  * @var $parent \reketaka\nodes\models\Nodes|false
- * @var $controllers_methods []
+ * @var $controllers []
  */
 
 /**
@@ -33,7 +33,7 @@ $nodeModule = Yii::$app->getModule('nodes');
 
     <?= $form->field($model, 'primary_key')->textInput() ?>
 
-	<?=$form->field($model, 'controller_method')->dropDownList($controllers_methods)?>
+	<?=$form->field($model, 'controller_id')->dropDownList($controllers)?>
 
 	<?php if($nodeModule->canEditDefaultNode()):?>
 		<?=$form->field($model, 'default')->checkbox()?>

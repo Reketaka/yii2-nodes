@@ -16,7 +16,7 @@ use yii\helpers\ArrayHelper;
  * @property string $alias
  * @property string $title
  * @property integer $primary_key
- * @property string $controller_method
+ * @property string $controller_id
  * @property integer $default
  */
 class Nodes extends \yii\db\ActiveRecord
@@ -56,7 +56,8 @@ class Nodes extends \yii\db\ActiveRecord
             [['title'], 'string', 'max' => 255],
             [['default'], 'integer'],
             [['default'], 'default', 'value' => 0],
-            [['controller_method'], 'string'],
+            [['controller_id'], 'integer'],
+            [['controller_id'], 'exist', 'skipOnError' => false, 'targetClass' => NodesControllerCatalog::className(), 'targetAttribute' => ['controller_id' => 'id']],
             [['primary_key'], 'required']
         ];
     }
@@ -72,10 +73,14 @@ class Nodes extends \yii\db\ActiveRecord
             'alias' => Module::t('app', 'alias'),
             'title' => Module::t('app', 'title'),
             'primary_key' => Module::t('app', 'primary_key'),
-            'controller_method' => Module::t('app', 'controller_method'),
+            'controller_id' => Module::t('app', 'controller_method'),
             'default' => Module::t('app', 'is_default'),
             'link' => Module::t('app', 'link')
         ];
+    }
+
+    public function getController(){
+        return $this->hasOne(NodesControllerCatalog::className(), ['id'=>'controller_id']);
     }
 
     /**
@@ -120,7 +125,7 @@ class Nodes extends \yii\db\ActiveRecord
      */
     public function hasChildrens()
     {
-        return empty($this->getChildrens(1));
+        return !empty($this->getChildrens(1));
     }
 
     /**

@@ -60,7 +60,7 @@ use app\base\common\models\User;
                                 ],
                                 'alias',
                                 'title',
-								'controller_method',
+								'controller_id',
 								[
 									'label'=>$model->getAttributeLabel('default'),
 									'format'=>'raw',

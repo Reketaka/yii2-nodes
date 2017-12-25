@@ -7,7 +7,7 @@ use reketaka\nodes\Module;
 /**
  * @var $model reketaka\nodes\models\Nodes
  * @var $parent integer
- * @var $controllers_methods []
+ * @var $controllers []
  */
 
 
@@ -25,7 +25,7 @@ use reketaka\nodes\Module;
                 <?= $this->render('_form', [
                     'model' => $model,
                     'parent'=>$parent,
-                    'controllers_methods'=>$controllers_methods
+                    'controllers'=>$controllers
                 ]) ?>
 
             </div>
