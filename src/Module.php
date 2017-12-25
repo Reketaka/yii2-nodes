@@ -7,6 +7,7 @@ use reketaka\nodes\models\Nodes;
 use yii\base\Module as BaseModule;
 use Yii;
 use yii\db\Exception;
+use yii\helpers\Url;
 
 class Module extends BaseModule{
 
@@ -26,6 +27,13 @@ class Module extends BaseModule{
      * @var bool
      */
     public $disableChangeRootPage = false;
+
+
+    /**
+     * Устанавливает домашную страницу можно использовать когда сайт поделен на две части админ и клиент
+     * @var bool
+     */
+    public $homePage = false;
 
     public function init(){
         if(!$this->controllerScanPathAr) {
@@ -59,10 +67,18 @@ class Module extends BaseModule{
             return true;
         }
 
-        return (Nodes::getDb()->cache(function($db){
-            $nodes = Nodes::find()->where(['default'=>1])->all();
-            return empty($nodes);
-        }));
+        return empty(Nodes::find()->where(['default'=>1])->all());
     }
 
+    /**
+     * Возвращает адрес до домашней страницы проекта
+     * @return string
+     */
+    public function getHomePage(){
+        if(!$this->homePage){
+            return Url::home();
+        }
+
+        return Url::to($this->homePage);
+    }
 }

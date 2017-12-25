@@ -29,6 +29,15 @@ use yii\grid\GridView;
 
 					'id',
 					'path',
+					[
+						'attribute' => 'default',
+						'content'=>function($model){
+							if($model->default){
+                                return Html::tag('span', null, ['class'=>'glyphicon glyphicon-ok']);
+							}
+                            return Html::tag('span', null, ['class'=>'glyphicon glyphicon-remove']);
+						}
+					],
 
 					['class' => 'yii\grid\ActionColumn'],
 				],

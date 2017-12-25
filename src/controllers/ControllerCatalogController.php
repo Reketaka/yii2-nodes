@@ -29,7 +29,9 @@ class ControllerCatalogController extends Controller
     public function actionReIndex(){
         NodesControllerCatalog::reIndex();
 
-        return $this->redirect(Yii::$app->request->referrer?Yii::$app->request->referrer:Url::home());
+        $module = Yii::$app->getModule('nodes');
+
+        return $this->redirect(Yii::$app->request->referrer?Yii::$app->request->referrer:$module->getHomePage());
     }
 
     /**

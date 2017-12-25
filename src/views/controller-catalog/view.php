@@ -31,6 +31,16 @@ use yii\widgets\DetailView;
 				'attributes' => [
 					'id',
 					'path',
+					[
+						'label'=>$model->getAttributeLabel('default'),
+						'format'=>'raw',
+						'value'=>function($model){
+                            if($model->default){
+                                return Html::tag('span', null, ['class'=>'glyphicon glyphicon-ok']);
+                            }
+                            return Html::tag('span', null, ['class'=>'glyphicon glyphicon-remove']);
+						}
+					]
 				],
 			]) ?>
 
