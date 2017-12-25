@@ -33,7 +33,8 @@ Add to your web.php
             'class'=>'reketaka\nodes\Module',
             'controllerScanPathAr'=>[
                 'namespace'=>'dir_path'
-            ]
+            ],
+            'homePage' => ['/site/index']
         ]
 ]
 ```

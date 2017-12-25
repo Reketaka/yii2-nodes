@@ -77,7 +77,21 @@ use app\base\common\models\User;
 									'value'=>function($model){
                         				return Html::a($model->url, $model->url, ['target'=>'_blank']);
 									}
-								]
+								],
+								[
+									'format'=>'raw',
+									'label'=>$model->getAttributeLabel('date_create'),
+									'value'=>function($model){
+                        				return Yii::$app->formatter->asDatetime($model->date_create, Yii::$app->params['dateControlDisplay'][\kartik\datecontrol\Module::FORMAT_DATETIME]);
+                                    }
+								],
+                                [
+                                    'format'=>'raw',
+                                    'label'=>$model->getAttributeLabel('date_update'),
+                                    'value'=>function($model){
+                                        return Yii::$app->formatter->asDatetime($model->date_update, Yii::$app->params['dateControlDisplay'][\kartik\datecontrol\Module::FORMAT_DATETIME]);
+                                    }
+                                ]
                             ]
                         ])
 

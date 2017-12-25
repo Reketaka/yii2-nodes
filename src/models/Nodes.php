@@ -6,7 +6,10 @@ use reketaka\nodes\behaviors\AliasBehavior;
 use reketaka\nodes\behaviors\NodeBehavior;
 use Yii;
 use reketaka\nodes\Module;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
+use kartik\datecontrol\Module as DateModule;
 
 /**
  * This is the model class for table "nodes".
@@ -25,6 +28,15 @@ class Nodes extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['date_create', 'date_update'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['date_update']
+                ],
+                // если вместо метки времени UNIX используется datetime:
+                'value' => Yii::$app->formatter->asDate('now', Yii::$app->params['dateControlSave'][DateModule::FORMAT_DATETIME]),
+            ],
             [
                 'class' => AliasBehavior::className(),
                 'level_id' => 'parent_id',
@@ -58,7 +70,7 @@ class Nodes extends \yii\db\ActiveRecord
             [['default'], 'default', 'value' => 0],
             [['controller_id'], 'integer'],
             [['controller_id'], 'exist', 'skipOnError' => false, 'targetClass' => NodesControllerCatalog::className(), 'targetAttribute' => ['controller_id' => 'id']],
-            [['primary_key'], 'required']
+            [['primary_key'], 'required'],
         ];
     }
 
@@ -177,5 +189,12 @@ class Nodes extends \yii\db\ActiveRecord
         return $items;
     }
 
+    public function create($model, self $parent){
+        /**
+         * @var $model ActiveRecord
+         */
+
+        $id = $model->getPrimaryKey();
+    }
 
 }

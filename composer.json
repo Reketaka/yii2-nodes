@@ -13,7 +13,8 @@
     ],
     "require": {
         "yiisoft/yii2": "*",
-        "2amigos/yii2-transliterator-helper": "*"
+        "2amigos/yii2-transliterator-helper": "*",
+        "kartik-v/yii2-datecontrol":"^1.9"
     },
     "autoload": {
         "psr-4": {
