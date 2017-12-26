@@ -13,11 +13,7 @@ use reketaka\nodes\Module;
 use yii\helpers\Url;
 
 
-//$model = \app\base\common\models\CertificatesItems::findOne(1);
-//
-//$controller = \reketaka\nodes\models\NodesControllerCatalog::findOne(2);
-//
-//\reketaka\nodes\models\Nodes::create($model, false, $controller);
+
 
 ?>
 
