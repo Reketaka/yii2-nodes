@@ -6,10 +6,12 @@ use reketaka\nodes\behaviors\AliasBehavior;
 use reketaka\nodes\behaviors\NodeBehavior;
 use Yii;
 use reketaka\nodes\Module;
+use yii\base\Exception;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use kartik\datecontrol\Module as DateModule;
+use reketaka\nodes\behaviors\NodeChildBehavior;
 
 /**
  * This is the model class for table "nodes".
@@ -21,9 +23,12 @@ use kartik\datecontrol\Module as DateModule;
  * @property integer $primary_key
  * @property string $controller_id
  * @property integer $default
+ * @property string $model_class
  */
 class Nodes extends \yii\db\ActiveRecord
 {
+
+    const ROOT_ID = 0;
 
     public function behaviors()
     {
@@ -64,13 +69,15 @@ class Nodes extends \yii\db\ActiveRecord
     {
         return [
             [['parent_id', 'primary_key'], 'integer'],
-            [['parent_id'], 'default', 'value' => 0],
+            [['model_class'], 'string'],
+            [['parent_id'], 'default', 'value' => self::ROOT_ID],
             [['title'], 'string', 'max' => 255],
+            [['title'], 'default', 'value' => 'test'],
             [['default'], 'integer'],
             [['default'], 'default', 'value' => 0],
             [['controller_id'], 'integer'],
             [['controller_id'], 'exist', 'skipOnError' => false, 'targetClass' => NodesControllerCatalog::className(), 'targetAttribute' => ['controller_id' => 'id']],
-            [['primary_key'], 'required'],
+            [['primary_key', 'model_class'], 'required'],
         ];
     }
 
@@ -189,19 +196,58 @@ class Nodes extends \yii\db\ActiveRecord
         return $items;
     }
 
-    public static function create($model, $parent, NodesControllerCatalog $controller){
+    /**
+     * Возвращает Node для указанной модели если таковая существует
+     * @param $model
+     * @return array|null|Nodes|ActiveRecord
+     */
+    public static function get($model){
+        return self::find()
+            ->where([
+                'model_class'=>$model::className(),
+                'primary_key'=>$model->getPrimaryKey()
+            ])
+            ->one();
+    }
+
+    public static function create($model){
+
+        if($checkNode = self::get($model)){
+            return $checkNode;
+        }
+
         /**
          * @var $model ActiveRecord
          */
+        if(!$model->getBehavior(NodeChildBehavior::NAME)){
+            return false;
+        }
 
         $node = new self();
-        $node->title = $model->name;
+
         $node->primary_key = $model->getPrimaryKey();
-        $node->parent_id = $parent instanceof Nodes?$parent->id:0;
-        $node->controller_id = $controller->id;
+        $node->model_class = $model::className();
+
+
+        $node->title = $model->titleNode;
+        $node->parent_id = $model->parentNode;
+        $node->controller_id = $model->controllerNode->id;
+
+
         $node->save();
 
         return $node;
+    }
+
+    public function getModel(){
+        $modelClass = $this->model_class;
+
+        if(!class_exists($modelClass)){
+            throw new Exception(Module::t('errors', 'model_class_not_find'));
+        }
+
+        return $modelClass::findOne($this->primary_key);
+
     }
 
 }

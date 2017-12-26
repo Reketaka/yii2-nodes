@@ -85,6 +85,10 @@ class NodesControllerCatalog extends \yii\db\ActiveRecord
         return true;
     }
 
+    /**
+     * Возвращает дефолтный контроллер
+     * @return null|static
+     */
     public static function getDefault(){
         return self::findOne(['default'=>1]);
     }

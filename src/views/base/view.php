@@ -60,7 +60,17 @@ use app\base\common\models\User;
                                 ],
                                 'alias',
                                 'title',
-								'controller_id',
+								[
+									'label'=>$model->getAttributeLabel('controller_id'),
+									'format'=>'raw',
+									'value'=>function($model){
+                        				if($controller = $model->controller){
+                        					return Html::a($controller->path, ['/nodes/controller-catalog/view', 'id'=>$controller->id]);
+										}
+
+										return null;
+									}
+								],
 								[
 									'label'=>$model->getAttributeLabel('default'),
 									'format'=>'raw',
@@ -91,7 +101,8 @@ use app\base\common\models\User;
                                     'value'=>function($model){
                                         return Yii::$app->formatter->asDatetime($model->date_update, Yii::$app->params['dateControlDisplay'][\kartik\datecontrol\Module::FORMAT_DATETIME]);
                                     }
-                                ]
+                                ],
+								'model_class'
                             ]
                         ])
 

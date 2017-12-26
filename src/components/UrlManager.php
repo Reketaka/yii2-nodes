@@ -42,20 +42,28 @@ class UrlManager extends UrlManagerYii{
 
         list($controller, $method) = explode('/', $node->controller->path);
 
-        $controller = str_replace('Controller', '', $controller);
-        $method = strtolower(str_replace('action', '', $method));
+        $ar = [];
+        $ar['controller'] = str_replace('Controller', '', $controller);
+        $ar['method'] = strtolower(str_replace('action', '', $method));
 
-        $controller = preg_split('/(?=[A-Z])/', $controller);
-        $controller = array_filter($controller);
-        $controller = array_map(function($v){
-            return strtolower($v);
-        }, $controller);
-        $controller = implode('-', $controller);
+        foreach($ar as $key=>$val) {
+            $ar[$key] = preg_split('/(?=[A-Z])/', $val);
+
+            if(!is_array($ar[$key])){
+                continue;
+            }
+
+            $ar[$key] = array_filter($ar[$key]);
+            $ar[$key] = array_map(function ($v) {
+                return strtolower($v);
+            }, $ar[$key]);
+            $ar[$key] = implode('-', $ar[$key]);
+        }
 
         $params = $request->getQueryParams();
-        $params['node'] = $node;
+        $params['model'] = $node->model;
 
-        return [$controller.'/'.$method, $params];
+        return [$ar['controller'].'/'.$ar['method'], $params];
     }
 }
 

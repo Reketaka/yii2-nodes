@@ -14,6 +14,8 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use reketaka\nodes\helpers\NodeHelper;
 use reketaka\nodes\Module;
+use yii\web\Response;
+use yii\web\View;
 
 class BaseController extends Controller{
 
@@ -101,6 +103,25 @@ class BaseController extends Controller{
         $model->delete();
 
         return $this->redirect(Yii::$app->request->referrer?Yii::$app->request->referrer:['base/index']);
+    }
+
+    /**
+     * Удаляет выбранные в таблице Node для каждой запускается события
+     * @param $ids
+     * @return array
+     */
+    public function actionDeleteMultiple($ids){
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $items = Nodes::findAll(explode(',', $ids));
+
+        foreach($items as $item){
+            $item->delete();
+        }
+
+        return [
+            'success'=>true
+        ];
     }
 
     public function findModel($id){

@@ -35,6 +35,8 @@ $nodeModule = Yii::$app->getModule('nodes');
 
 	<?=$form->field($model, 'controller_id')->dropDownList($controllers)?>
 
+	<?=$form->field($model, 'model_class')->textInput(['disabled'=>true])?>
+
 	<?php if($nodeModule->canEditDefaultNode()):?>
 		<?=$form->field($model, 'default')->checkbox()?>
 	<?php endif; ?>

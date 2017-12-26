@@ -13,7 +13,44 @@ use reketaka\nodes\Module;
 use yii\helpers\Url;
 
 
+$this->registerJs("
+    $('#delete_chosen').click(function(e){
+        e.preventDefault();
+        
+        var ids = $('#nodes_table').yiiGridView('getSelectedRows');
+        
+        if(ids == ''){
+            return;
+        }
+        
+        $.getJSON('".Url::to(['base/delete-multiple'])."?ids='+ids, function(data){
+            if(data.success){
+                window.location.reload();
+                return;
+            }
+        });
+    });
+", \yii\web\View::POS_END);
 
+$model = \app\base\common\models\CertificatesItems::findOne(1);
+
+var_Dump($model->getNode()->url);
+
+//var_Dump($model);
+//var_Dump($model->createNode());
+
+#$model->createNode();
+//exit();
+
+//var_Dump($model->beh('NodeChildBehavior'));
+//exit();
+
+//$model->createNode();
+
+
+//$controller = \reketaka\nodes\models\NodesControllerCatalog::findOne(2);
+
+//\reketaka\nodes\models\Nodes::create($model, false, $controller);
 
 ?>
 
@@ -25,9 +62,14 @@ use yii\helpers\Url;
 
 			<div class="x_title">
 
-				<?php if(User::canRoute(['base/create'])):
-					echo Html::a(Module::t('app', 'create-new-page'), ['base/create', 'parent_id'=>$searchModel->parent_id], ['class'=>'btn btn-success']);
-				endif; ?>
+				<div class="btn-group">
+					<?php if(User::canRoute(['base/create'])):
+						echo Html::a(Module::t('app', 'create-new-page'), ['base/create', 'parent_id'=>$searchModel->parent_id], ['class'=>'btn btn-success']);
+					endif; ?>
+					<?php if(User::canRoute(['base/delete-multiple'])):
+						echo Html::a(Module::t('app', 'delete_chosen'), ['delete-multiple'], ['class'=>'btn btn-danger', 'id'=>'delete_chosen']);
+					endif; ?>
+				</div>
 
 			</div>
 
@@ -51,7 +93,12 @@ use yii\helpers\Url;
                 <?= GridView::widget([
                 	'filterModel' => $searchModel,
                     'dataProvider' => $dataProvider,
+                    'id'=>'nodes_table',
                     'columns' => [
+                        [
+                            'class' => 'yii\grid\CheckboxColumn',
+                            'name' => 'id'
+                        ],
                     	[
                     		'attribute' => 'id',
 							'format' => 'raw',
@@ -63,8 +110,6 @@ use yii\helpers\Url;
                                 return $model->id;
                             }
 						],
-						'id',
-//					    'parent_id',
                         'alias',
                         'title',
                         [
