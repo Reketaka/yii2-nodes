@@ -189,12 +189,19 @@ class Nodes extends \yii\db\ActiveRecord
         return $items;
     }
 
-    public function create($model, self $parent){
+    public static function create($model, $parent, NodesControllerCatalog $controller){
         /**
          * @var $model ActiveRecord
          */
 
-        $id = $model->getPrimaryKey();
+        $node = new self();
+        $node->title = $model->name;
+        $node->primary_key = $model->getPrimaryKey();
+        $node->parent_id = $parent instanceof Nodes?$parent->id:0;
+        $node->controller_id = $controller->id;
+        $node->save();
+
+        return $node;
     }
 
 }
