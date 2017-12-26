@@ -32,9 +32,6 @@ $this->registerJs("
     });
 ", \yii\web\View::POS_END);
 
-$model = \app\base\common\models\CertificatesItems::findOne(1);
-
-var_Dump($model->getNode()->url);
 
 //var_Dump($model);
 //var_Dump($model->createNode());
