@@ -86,14 +86,27 @@ class NodeChildBehavior extends Behavior{
         return Nodes::ROOT_ID;
     }
 
+    /**
+     * Создает Nodes на основании модели потомка, если Nodes уже существует вернет её модель
+     * @return array|bool|null|Nodes|\yii\db\ActiveRecord
+     */
     public function createNode(){
         return Nodes::create($this->owner);
     }
 
+    /**
+     * Возвращает Nodes
+     * @return array|null|Nodes|\yii\db\ActiveRecord
+     */
     public function getNode(){
         return Nodes::get($this->owner);
     }
 
+    /**
+     * Возвращает Url от корня
+     * /example/test
+     * @return array|string
+     */
     public function getUrl(){
         return $this->getNode()->getUrl();
     }

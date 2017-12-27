@@ -127,7 +127,7 @@ class Nodes extends \yii\db\ActiveRecord
         $fullUrl[] = $this->alias;
 
         $parentId = $this->parent_id;
-        while ($parentId && $parent = self::findOne($parentId)) {
+        while ($parentId && $parent = self::getDb()->cache(function()use($parentId){ self::findOne($parentId); })) {
             array_unshift($fullUrl, $parent->alias);
             $parentId = $parent->parent_id;
         }

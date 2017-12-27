@@ -75,7 +75,9 @@ class NodeHelper{
 
         $requestAr = trim($request->getPathInfo(), '/');
         if(empty($requestAr)){
-            $defaultNode = Nodes::findOne(['default'=>1]);
+            $defaultNode = Nodes::getDb()->cache(function(){
+                return Nodes::findOne(['default'=>1]);
+            });
 
             if(!$defaultNode){
                 throw new Exception(Module::t('errors', 'not_find_default_node'));
@@ -91,10 +93,14 @@ class NodeHelper{
         $node = false;
         foreach($requestAr as $key=>$part){
 
-            $parent = Nodes::findOne([
-                'parent_id'=>!$parent?0:$parent->id,
-                'alias'=>$part
-            ]);
+            $parent = Nodes::getDb()->cache(function()use($parent, $part){
+
+                return Nodes::findOne([
+                    'parent_id'=>!$parent?0:$parent->id,
+                    'alias'=>$part
+                ]);
+            });
+
 
             if(!$parent){
                 break;
