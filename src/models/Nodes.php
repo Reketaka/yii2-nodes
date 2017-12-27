@@ -77,7 +77,7 @@ class Nodes extends \yii\db\ActiveRecord
             [['default'], 'default', 'value' => 0],
             [['controller_id'], 'integer'],
             [['controller_id'], 'exist', 'skipOnError' => false, 'targetClass' => NodesControllerCatalog::className(), 'targetAttribute' => ['controller_id' => 'id']],
-            [['primary_key', 'model_class'], 'required'],
+//            [['primary_key', 'model_class'], 'required'],
         ];
     }
 
@@ -202,12 +202,14 @@ class Nodes extends \yii\db\ActiveRecord
      * @return array|null|Nodes|ActiveRecord
      */
     public static function get($model){
-        return self::find()
-            ->where([
-                'model_class'=>$model::className(),
-                'primary_key'=>$model->getPrimaryKey()
-            ])
-            ->one();
+        return self::getDb()->cache(function()use($model){
+            return self::find()
+                ->where([
+                    'model_class'=>$model::className(),
+                    'primary_key'=>$model->getPrimaryKey()
+                ])
+                ->one();
+        });
     }
 
     public static function create($model){

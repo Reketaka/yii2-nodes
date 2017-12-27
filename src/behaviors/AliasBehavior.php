@@ -35,7 +35,9 @@ class AliasBehavior extends Behavior{
         }
 
 
-        $sender->{$this->alias} = Inflector::slug(TransliteratorHelper::process($sender->{$this->title}), '-', true);
+        if(empty($sender->{$this->alias})) {
+            $sender->{$this->alias} = Inflector::slug(TransliteratorHelper::process($sender->{$this->title}), '-', true);
+        }
 
         for($suffix=2;!$this->checkUniqAlias($sender);$suffix++){
             $sender->{$this->alias} = $sender->{$this->alias}.'-'.$suffix;

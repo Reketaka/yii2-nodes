@@ -62,13 +62,17 @@ class NodeHelper{
 
     /**
      * Возвращает Node из текущего Request
-     * @param Request $request
+     * @param Request|false $request
      * @return bool|null|static
      */
-    public static function getNodeFromRequest(Request $request){
+    public static function getNodeFromRequest($request=false){
         /**
          * @var $request Request
          */
+        if(!$request){
+            $request = Yii::$app->request;
+        }
+
         $requestAr = trim($request->getPathInfo(), '/');
         if(empty($requestAr)){
             $defaultNode = Nodes::findOne(['default'=>1]);

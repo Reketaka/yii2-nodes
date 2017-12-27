@@ -7,6 +7,7 @@ use Yii;
 use reketaka\nodes\models\Nodes;
 use yii\base\Behavior;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 class NodeBehavior extends Behavior
 {
@@ -15,8 +16,13 @@ class NodeBehavior extends Behavior
     {
         return [
             ActiveRecord::EVENT_BEFORE_UPDATE => 'beforeUpdate',
-            ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert'
+            ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
+            ActiveRecord::EVENT_BEFORE_DELETE=>'beforeDelete'
         ];
+    }
+
+    public function beforeDelete($event){
+        $this->deleteAllChildrens();
     }
 
     public function beforeUpdate($event)
@@ -39,6 +45,16 @@ class NodeBehavior extends Behavior
 
         $this->uncheckDefaultElement($node);
 
+    }
+
+    /**
+     * Удалит всех потомков на всех уровнях вложенности
+     */
+    public function deleteAllChildrens(){
+        $childrens = $this->owner->getChildrens(0);
+        $childrens = ArrayHelper::getColumn($childrens, 'id');
+
+        Nodes::deleteAll("id IN (".implode(',', $childrens).")");
     }
 
     /**

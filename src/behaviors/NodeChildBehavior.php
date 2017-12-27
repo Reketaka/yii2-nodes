@@ -93,4 +93,8 @@ class NodeChildBehavior extends Behavior{
     public function getNode(){
         return Nodes::get($this->owner);
     }
+
+    public function getUrl(){
+        return $this->getNode()->getUrl();
+    }
 }
