@@ -52,6 +52,9 @@ class NodeBehavior extends Behavior
      */
     public function deleteAllChildrens(){
         $childrens = $this->owner->getChildrens(0);
+        if(!$childrens){
+            return true;
+        }
         $childrens = ArrayHelper::getColumn($childrens, 'id');
 
         Nodes::deleteAll("id IN (".implode(',', $childrens).")");

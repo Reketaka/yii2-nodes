@@ -245,7 +245,7 @@ class Nodes extends \yii\db\ActiveRecord
         $modelClass = $this->model_class;
 
         if(!class_exists($modelClass)){
-            throw new Exception(Module::t('errors', 'model_class_not_find'));
+            return null;
         }
 
         return $modelClass::findOne($this->primary_key);
