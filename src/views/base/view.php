@@ -85,7 +85,7 @@ use app\base\common\models\User;
 									'label'=>$model->getAttributeLabel('link'),
 									'format'=>'raw',
 									'value'=>function($model){
-                        				return Html::a($model->url, $model->url, ['target'=>'_blank']);
+                        				return Html::a($model->getUrl(), $model->getUrl(), ['target'=>'_blank']);
 									}
 								],
 								[
