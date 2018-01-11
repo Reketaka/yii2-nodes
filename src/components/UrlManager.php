@@ -64,6 +64,8 @@ class UrlManager extends UrlManagerYii{
 
         if($model = $node->model){
             $params['model'] = $model;
+        }else{
+            $params['model'] = $node;
         }
 
         return [$ar['controller'].'/'.$ar['method'], $params];
