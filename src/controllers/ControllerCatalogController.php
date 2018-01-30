@@ -16,6 +16,10 @@ use reketaka\nodes\Module;
  */
 class ControllerCatalogController extends Controller
 {
+    public function behaviors()
+    {
+        return Yii::$app->getModule('nodes')->behaviorsController;
+    }
 
 
     public function beforeAction($action)

@@ -35,12 +35,23 @@ class Module extends BaseModule{
      */
     public $homePage = false;
 
+    /**
+     * Поведения которые будут подцепляться к контроллерам расширения
+     * @var array
+     */
+    public $behaviorsController = [
+        'ghost-access'=> [
+            'class' => 'app\base\common\override\GhostAccessControl',
+        ]
+    ];
+
     public function init(){
         if(!$this->controllerScanPathAr) {
             throw new \yii\base\Exception(self::t('errors', 'controllersScanPathAr_empty'));
         }
         parent::init();
     }
+
     public static function t($category, $message, $params = [], $language = null)
     {
         if ( !isset(Yii::$app->i18n->translations['modules/nodes/*']) )

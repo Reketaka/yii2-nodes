@@ -19,6 +19,12 @@ use yii\web\View;
 
 class BaseController extends Controller{
 
+    public function behaviors()
+    {
+        return Yii::$app->getModule('nodes')->behaviorsController;
+    }
+
+
     public function beforeAction($action)
     {
 
