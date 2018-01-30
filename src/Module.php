@@ -41,7 +41,7 @@ class Module extends BaseModule{
      */
     public $behaviorsController = [
         'ghost-access'=> [
-            'class' => 'app\base\common\override\GhostAccessControl',
+            'class' => 'webvimark\modules\UserManagement\components\GhostAccessControl',
         ]
     ];
 
