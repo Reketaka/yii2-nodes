@@ -68,6 +68,8 @@ class UrlManager extends UrlManagerYii{
             $params['model'] = $node;
         }
 
+        Yii::$app->view->title = $node->title;
+
         return [$ar['controller'].'/'.$ar['method'], $params];
     }
 }
