@@ -96,7 +96,7 @@ class NodeHelper{
             $parent = Nodes::getDb()->cache(function()use($parent, $part){
 
                 return Nodes::findOne([
-                    'parent_id'=>!$parent?0:$parent->id,
+                    'parent_id'=>!$parent?Nodes::ROOT_ID:$parent->id,
                     'alias'=>$part
                 ]);
             });

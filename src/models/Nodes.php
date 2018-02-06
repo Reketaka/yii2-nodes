@@ -40,7 +40,7 @@ class Nodes extends \yii\db\ActiveRecord
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['date_update']
                 ],
                 // если вместо метки времени UNIX используется datetime:
-                'value' => Yii::$app->formatter->asDate('now', Yii::$app->params['dateControlSave'][DateModule::FORMAT_DATETIME]),
+                'value' => Yii::$app->formatter->asDate(time(), Yii::$app->params['dateControlSave'][DateModule::FORMAT_DATETIME]),
             ],
             [
                 'class' => AliasBehavior::className(),
@@ -254,6 +254,34 @@ class Nodes extends \yii\db\ActiveRecord
         }
 
         return $modelClass::findOne($this->primary_key);
+
+    }
+
+    /**
+     * Удаляет ноду если таковая найдется по указанным условиям
+     * @param $params
+     */
+    public static function deleteIfExist($params){
+        if($node = self::findOne($params)){
+            $node->delete();
+        }
+    }
+
+    /**
+     * Возвращает url по параметрам, найденная нода кешируется
+     * @param $params
+     * @return null
+     */
+    public static function urlByParams($params){
+        $node = self::getDb()->cache(function()use($params){
+            return self::findOne($params);
+        });
+
+        if(!$node){
+            return null;
+        }
+
+        return $node->url;
 
     }
 

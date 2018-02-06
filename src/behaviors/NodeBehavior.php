@@ -78,5 +78,4 @@ class NodeBehavior extends Behavior
         return true;
     }
 
-
 }
