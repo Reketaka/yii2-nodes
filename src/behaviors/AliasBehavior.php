@@ -12,14 +12,16 @@ use yii\helpers\Inflector;
 
 class AliasBehavior extends Behavior{
 
-    public $level_id;
     public $alias;
     public $title;
+    public $callbackUniqAlias;
+    public $event = ActiveRecord::EVENT_BEFORE_INSERT;
+    public $active;
 
     public function events()
     {
         return [
-            ActiveRecord::EVENT_BEFORE_INSERT=>'setSlug'
+            $this->event=>'setSlug'
         ];
     }
 
@@ -30,38 +32,19 @@ class AliasBehavior extends Behavior{
          */
         $sender = $event->sender;
 
-        if(!$sender->isNewRecord){
-            return;
-        }
-
-
         if(empty($sender->{$this->alias})) {
             $sender->{$this->alias} = Inflector::slug(TransliteratorHelper::process($sender->{$this->title}), '-', true);
         }
 
-        for($suffix=2;!$this->checkUniqAlias($sender);$suffix++){
-            $sender->{$this->alias} = $sender->{$this->alias}.'-'.$suffix;
+        if(!is_callable($this->callbackUniqAlias)){
+            return true;
         }
 
+        $callback = $this->callbackUniqAlias;
 
-
-    }
-
-    /**
-     * Проверяет на уникальность алиас у модели в её уровне
-     * true если уникальный false если нет
-     * @param $model
-     * @param $alias
-     * @return bool
-     */
-    public function checkUniqAlias($model){
-
-        $r = $model::find()->where([
-            $this->level_id=>$model->{$this->level_id},
-            $this->alias=>$model->{$this->alias}
-        ])->one();
-
-        return is_null($r);
+        for ($suffix = 2; !$callback($sender); $suffix++) {
+            $sender->{$this->alias} = $sender->{$this->alias} . '-' . $suffix;
+        }
 
     }
 }

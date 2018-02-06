@@ -44,9 +44,14 @@ class Nodes extends \yii\db\ActiveRecord
             ],
             [
                 'class' => AliasBehavior::className(),
-                'level_id' => 'parent_id',
                 'alias' => 'alias',
-                'title' => 'title'
+                'title' => 'title',
+                'callbackUniqAlias'=>function(Nodes $model){
+                    return is_null($model::find()->where([
+                        'parent_id'=>$model->parent_id,
+                        'alias'=>$model->alias
+                    ])->one());
+                }
             ],
             [
                 'class' => NodeBehavior::className()
