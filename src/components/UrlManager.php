@@ -5,6 +5,7 @@ namespace reketaka\nodes\components;
 
 use reketaka\nodes\helpers\NodeHelper;
 use reketaka\nodes\models\Nodes;
+use reketaka\nodes\models\NodesControllerCatalog;
 use reketaka\nodes\Module;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
@@ -36,11 +37,15 @@ class UrlManager extends UrlManagerYii{
             exit();
         }
 
-        if(!$node->controller){
+        $controller = NodesControllerCatalog::getDb()->cache(function()use($node){
+            return NodesControllerCatalog::findOne(['id'=>$node->controller_id]);
+        });
+
+        if(!$controller){
             throw new Exception(Module::t('errors', 'not_select_controller_in_node'));
         }
 
-        list($controller, $method) = explode('/', $node->controller->path);
+        list($controller, $method) = explode('/', $controller->path);
 
         $ar = [];
         $ar['controller'] = str_replace('Controller', '', $controller);
@@ -71,6 +76,10 @@ class UrlManager extends UrlManagerYii{
         Yii::$app->view->title = $node->title;
 
         return [$ar['controller'].'/'.$ar['method'], $params];
+    }
+
+    public function getNode(){
+        return NodeHelper::getNodeFromRequest();
     }
 }
 
