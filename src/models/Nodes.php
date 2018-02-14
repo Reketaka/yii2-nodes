@@ -207,7 +207,7 @@ class Nodes extends \yii\db\ActiveRecord
      * @return array|null|Nodes|ActiveRecord
      */
     public static function get($model){
-        return self::getDb()->cache(function()use($model){
+        return self::getDb()->noCache(function()use($model){
             return self::find()
                 ->where([
                     'model_class'=>$model::className(),

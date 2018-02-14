@@ -6,6 +6,7 @@ namespace reketaka\nodes\behaviors;
 use reketaka\nodes\models\Nodes;
 use reketaka\nodes\models\NodesControllerCatalog;
 use yii\base\Behavior;
+use yii\db\ActiveRecord;
 
 class NodeChildBehavior extends Behavior{
 
@@ -35,6 +36,39 @@ class NodeChildBehavior extends Behavior{
      * @var int|NodesControllerCatalog
      */
     public $nodeParent = 0;
+
+    /**
+     * При создании модели создавать Node на указанном уровне
+     * @var bool
+     */
+    public $eventCreate = false;
+
+    public $eventUpdate = false;
+
+    public $eventDelete = false;
+
+    public function events()
+    {
+        $parent = parent::events();
+
+        $events = [];
+
+        if($this->eventCreate){
+            $events[ActiveRecord::EVENT_AFTER_INSERT] = function($event){
+                $event->sender->createNode();
+            };
+        }
+
+        if($this->eventDelete){
+            $events[ActiveRecord::EVENT_BEFORE_DELETE] = function($event){
+                if($node = $event->sender->node){
+                    $node->delete();
+                }
+            };
+        }
+
+        return array_merge($parent, $events);
+    }
 
     /**
      * Возвращает контроллер который отвечает за обработку элемента этой Node
@@ -79,9 +113,9 @@ class NodeChildBehavior extends Behavior{
             return $this->nodeParent->id;
         }
 
-        if($nodeController = NodesControllerCatalog::findOne($this->nodeParent)){
-            return $nodeController->id;
-        }
+       if($this->nodeParent){
+            return $this->nodeParent->id;
+       }
 
         return Nodes::ROOT_ID;
     }
