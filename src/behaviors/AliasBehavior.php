@@ -12,8 +12,8 @@ use yii\helpers\Inflector;
 
 class AliasBehavior extends Behavior{
 
-    public $alias;
-    public $title;
+    public $alias = 'alias';
+    public $title = 'title';
     public $callbackUniqAlias;
     public $event = ActiveRecord::EVENT_BEFORE_INSERT;
     public $active;
