@@ -105,13 +105,6 @@ class NodeChildBehavior extends Behavior{
     }
 
     public function getParentNode(){
-        if($this->nodeParent == Nodes::ROOT_ID){
-            return Nodes::ROOT_ID;
-        }
-
-        if($this->nodeParent instanceof NodesControllerCatalog){
-            return $this->nodeParent->id;
-        }
 
        if($this->nodeParent){
             return $this->nodeParent->id;
@@ -142,6 +135,10 @@ class NodeChildBehavior extends Behavior{
      * @return array|string
      */
     public function getUrl(){
-        return $this->getNode()->getUrl();
+        if($node = $this->node){
+            return $node->url;
+        }
+
+        return false;
     }
 }
